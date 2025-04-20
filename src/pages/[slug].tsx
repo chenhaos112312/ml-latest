@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Detail from "src/routes/Detail"
 import { filterPosts } from "src/libs/utils/notion"
 import { CONFIG } from "site.config"
@@ -15,8 +16,8 @@ import { useState,useEffect } from 'react'
 import md5 from 'js-md5'
 import router from "next/router"
 import useNotification from 'src/components/Notification'
-import { getPageTableOfContents } from 'lib/notion/getPageTableOfContents'
-import { getPasswordQuery } from '/lib/password'
+// import { getPageTableOfContents } from 'lib/notion/getPageTableOfContents'
+import { getPasswordQuery } from 'src/components/password'
 
 
 const filter: FilterPostsOptions = {
@@ -68,7 +69,7 @@ const DetailPage: NextPageWithLayout = () => {
    * 验证文章密码
    * @param {*} passInput
    */
-   const validPassword = passInput => {
+   const validPassword = (passInput: any) => {
     if (!post) {
       return false
     }
@@ -84,12 +85,8 @@ const DetailPage: NextPageWithLayout = () => {
     return false
   }
   // console.log(validPassword('123456'),"-------是否解锁-----------")
-
-
-  if (!post) return <CustomError />
-
-   // 文章加载
-   useEffect(() => {
+  // 文章加载
+  useEffect(() => {
     // 文章加密
     if (post?.password && post?.password !== '') {
       setLock(true)
@@ -109,19 +106,22 @@ const DetailPage: NextPageWithLayout = () => {
   }, [post])
 
    // 文章加载
-   useEffect(() => {
-    if (lock) {
-      return
-    }
-    // 文章解锁后生成目录与内容
-    if (post?.recordMap?.block) {
-      console.log(post?.recordMap,"-----------post.recordMap------useEffect------")
-      post.content = Object.keys(post.recordMap.block).filter(
-        key => post.recordMap.block[key]?.value?.parent_id === post.id
-      )
-      post.toc = getPageTableOfContents(post, post.recordMap)
-    }
-  }, [router, lock])
+  //  useEffect(() => {
+  //   if (lock) {
+  //     return
+  //   }
+  //   // 文章解锁后生成目录与内容
+  //   if (post?.recordMap?.block) {
+  //     console.log(post?.recordMap,"-----------post.recordMap------useEffect------")
+  //     post.content = Object.keys(post.recordMap.block).filter(
+  //       key => post.recordMap.block[key]?.value?.parent_id === post.id
+  //     )
+  //     post.toc = getPageTableOfContents(post, post.recordMap)
+  //   }
+  // }, [router, lock])
+
+
+  if (!post) return <CustomError />
 
   const image =
     post.thumbnail ??
