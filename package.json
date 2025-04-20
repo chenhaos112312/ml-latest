@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next build && next-sitemap --config next-sitemap.config.js && next export && rimraf .next/cache/webpack/client-production/0.pack.gz",
     "start": "next start",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
     "lint": "next lint"
