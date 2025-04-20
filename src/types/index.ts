@@ -33,6 +33,7 @@ export type TPost = {
   createdTime: string
   fullWidth: boolean
   thumbnail?: string
+  password: string
 }
 
 export type PostDetail = TPost & {
@@ -48,4 +49,4 @@ export type TCategories = {
   [category: string]: number
 }
 
-export type SchemeType = "light" | "dark"
+export type ThemeType = "dark" | "light"
