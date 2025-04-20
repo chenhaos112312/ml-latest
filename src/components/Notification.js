@@ -8,7 +8,7 @@ const useNotification = () => {
   const [message, setMessage] = useState('')
   const [isVisible, setIsVisible] = useState(false)
 
-  const showNotification = msg => {
+  const showNotification = (/** @type {import("react").SetStateAction<string>} */ msg) => {
     setMessage(msg)
     setIsVisible(true)
     setTimeout(() => {

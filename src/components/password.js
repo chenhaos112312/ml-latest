@@ -6,7 +6,7 @@ import { isBrowser } from '../../lib/utils'
  * 输入过一次的密码会被存储在浏览器中，便于下一次免密访问
  * 返回的是一组历史密码，便于客户端多次尝试
  */
-export const getPasswordQuery = path => {
+export const getPasswordQuery = (/** @type {string | URL} */ path) => {
   // 使用 URL 对象解析 URL
   const url = new URL(path, isBrowser ? window.location.origin : '')
 
