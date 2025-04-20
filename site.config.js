@@ -1,14 +1,17 @@
 const CONFIG = {
   // profile setting (required)
   profile: {
-    name: "狼友收藏夹",
-    image: "/avatar.png", // If you want to create your own notion avatar, check out https://notion-avatar.vercel.app
-    role: "",
-    bio: "你想看的这里都有！",
+    name: "morethanmin",
+    image: "/avatar.svg", // If you want to create your own notion avatar, check out https://notion-avatar.vercel.app
+    role: "frontend developer",
+    bio: "I develop everything using node.",
     email: "morethanmin.dev@gmail.com",
-    linkedin: "morethanmin",
-    github: "morethanmin",
+    // linkedin: "morethanmin",
+    // github: "morethanmin",
+    linkedin: "",
+    github: "",
     instagram: "",
+    telegram: "telegram"
   },
   projects: [
     {
@@ -20,20 +23,29 @@ const CONFIG = {
   blog: {
     title: "morethan-log",
     description: "welcome to morethan-log!",
-    scheme: "dark", // 'light' | 'dark' | 'system'
+  },
+  locale:{
+    COMMON:{
+      PASSWORD_ERROR: '密码错误！',
+      ARTICLE_LOCK_TIPS: '文章已上锁，请输入访问密码',
+      ARTICLE_UNLOCK_TIPS: '文章已解锁',
+      SUBMIT: '提交',
+    }
   },
 
   // CONFIG configration (required)
   link: "https://morethan-log.vercel.app",
   since: 2022, // If leave this empty, current year will be used.
-  lang: "zh-CN", // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES', 'ko-KR']
+  // lang: "en-US", // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES', 'ko-KR']
+  lang: "zh-CN",
   ogImageGenerateURL: "https://og-image-korean.vercel.app", // The link to generate OG image, don't end with a slash
 
   // notion configuration (required)
   notionConfig: {
-    pageId: process.env.NOTION_PAGE_ID||'12c36ba33dc4809baa2bd82194c18ef4',
-  },
+    // pageId: process.env.NOTION_PAGE_ID, chenhao 2.4改
+    pageId: "2747a460b1b547ffaace28413255ee2a",
 
+  },
 
   // plugin configuration (optional)
   googleAnalytics: {
@@ -48,12 +60,6 @@ const CONFIG = {
       siteVerification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
     },
   },
-  crisp: {
-    enable: true,
-    config: {
-      CRISP_WEBSITE_ID: "6c078f6c-7060-473b-ab40-639c0817c1cb",
-    },
-  },
   naverSearchAdvisor: {
     enable: false,
     config: {
@@ -61,7 +67,7 @@ const CONFIG = {
     },
   },
   utterances: {
-    enable: true,
+    enable: false, //chenhao 2.4改为false
     config: {
       repo: process.env.NEXT_PUBLIC_UTTERANCES_REPO || "",
       "issue-term": "og:title",
