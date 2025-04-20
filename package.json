@@ -1,5 +1,6 @@
 {
   "name": "morethan-log",
+  "packageManager": "yarn@1.22.22",
   "version": "1.3.0",
   "license": "MIT",
   "repository": {
