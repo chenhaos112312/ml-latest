@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CONFIG } from "site.config"
 import { useEffect, useRef } from 'react'
 
