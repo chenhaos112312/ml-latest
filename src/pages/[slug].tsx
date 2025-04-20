@@ -11,6 +11,13 @@ import { queryKey } from "src/constants/queryKey"
 import { dehydrate } from "@tanstack/react-query"
 import usePostQuery from "src/hooks/usePostQuery"
 import { FilterPostsOptions } from "src/libs/utils/notion/filterPosts"
+import { useState,useEffect } from 'react'
+import md5 from 'js-md5'
+import router from "next/router"
+import useNotification from 'src/components/Notification'
+import { getPageTableOfContents } from 'lib/notion/getPageTableOfContents'
+import { getPasswordQuery } from '/lib/password'
+
 
 const filter: FilterPostsOptions = {
   acceptStatus: ["Public", "PublicOnDetail"],
@@ -47,14 +54,74 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       dehydratedState: dehydrate(queryClient),
     },
-    // revalidate: CONFIG.revalidateTime,
+    revalidate: CONFIG.revalidateTime,
   }
 }
 
 const DetailPage: NextPageWithLayout = () => {
   const post = usePostQuery()
+  const [lock, setLock] = useState(post?.password && post?.password !== '')
+  const { showNotification, Notification } = useNotification()
+  console.log(lock,"-------是否加锁-----------")
+
+   /**
+   * 验证文章密码
+   * @param {*} passInput
+   */
+   const validPassword = passInput => {
+    if (!post) {
+      return false
+    }
+    const encrypt = md5(post?.slug + passInput)
+    console.log(encrypt,"----------encrypt----------")
+    if (passInput && encrypt === md5(post?.slug + passInput)) {
+      setLock(false)
+      // 输入密码存入localStorage，下次自动提交
+      localStorage.setItem('password_' + router.asPath, passInput)
+      showNotification(CONFIG.locale.COMMON.ARTICLE_UNLOCK_TIPS) // 设置解锁成功提示显示
+      return true
+    }
+    return false
+  }
+  // console.log(validPassword('123456'),"-------是否解锁-----------")
+
 
   if (!post) return <CustomError />
+
+   // 文章加载
+   useEffect(() => {
+    // 文章加密
+    if (post?.password && post?.password !== '') {
+      setLock(true)
+    } else {
+      setLock(false)
+    }
+
+    // 读取上次记录 自动提交密码
+    const passInputs = getPasswordQuery(router.asPath)
+    if (passInputs.length > 0) {
+      for (const passInput of passInputs) {
+        if (validPassword(passInput)) {
+          break // 密码验证成功，停止尝试
+        }
+      }
+    }
+  }, [post])
+
+   // 文章加载
+   useEffect(() => {
+    if (lock) {
+      return
+    }
+    // 文章解锁后生成目录与内容
+    if (post?.recordMap?.block) {
+      console.log(post?.recordMap,"-----------post.recordMap------useEffect------")
+      post.content = Object.keys(post.recordMap.block).filter(
+        key => post.recordMap.block[key]?.value?.parent_id === post.id
+      )
+      post.toc = getPageTableOfContents(post, post.recordMap)
+    }
+  }, [router, lock])
 
   const image =
     post.thumbnail ??
@@ -71,11 +138,15 @@ const DetailPage: NextPageWithLayout = () => {
     type: post.type[0],
     url: `${CONFIG.link}/${post.slug}`,
   }
+  const props = { lock, validPassword }
+
 
   return (
     <>
       <MetaConfig {...meta} />
-      <Detail />
+      {/* 解锁密码提示框 */}
+      {post?.password && post?.password !== '' && !lock && <Notification />}
+      <Detail  {...props} />
     </>
   )
 }
